@@ -236,7 +236,7 @@ public class Exercise1 {
         String q3_2 = (accounts[1].department == null)
                 ? "Nhân viên này chưa có phòng ban"
                 : "Phòng ban của nhân viên này là " + accounts[1].department.name;
-        System.out.println(q3);
+        System.out.println(q3_2);
 
         // =QUESTION 4
         String q4 = (accounts[0].position.name == Position.PositionName.DEV)
