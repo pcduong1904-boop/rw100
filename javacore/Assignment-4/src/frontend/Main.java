@@ -2,6 +2,7 @@ package frontend;
 
 import backend.Exercise1;
 import backend.Exercise4;
+import backend.Exercise5;
 import backend.Exercise6;
 
 //TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
@@ -19,5 +20,8 @@ public class Main {
 
         Exercise6 ex6 = new Exercise6();
         ex6.question1();
+
+        Exercise5 ex5 = new Exercise5(); // ✅ đổi tên
+        ex5.menu();
     }
 }
