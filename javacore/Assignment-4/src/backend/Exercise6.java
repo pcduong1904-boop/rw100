@@ -10,7 +10,7 @@ public class Exercise6 {
         phone.insertContact("an", "0123");
         phone.insertContact("binh", "0456");
 
-        System.out.println("Danh sach");
+        System.out.println("Danh sachx`");
         phone.showAll();
 
         System.out.println(" tim an ");
