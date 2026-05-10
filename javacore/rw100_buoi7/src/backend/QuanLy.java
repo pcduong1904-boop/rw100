@@ -1,4 +1,5 @@
 package backend;
+
 import entity.Account;
 import entity.Department;
 import entity.Position;
@@ -7,7 +8,7 @@ import java.util.*;
 
 
 public class QuanLy {
-    public static void quanly(){
+    public static void quanly() {
         Scanner scanner = new Scanner(System.in);
 
         List<Department> departments = new ArrayList<>();
@@ -16,7 +17,7 @@ public class QuanLy {
 
         int depId = 1, posId = 1, accId = 1;
 
-        while (true){
+        while (true) {
             System.out.println("======= MENU =======");
             System.out.println("1. Them phong ban");
             System.out.println("2. Them chuc vu");
@@ -31,7 +32,7 @@ public class QuanLy {
 
             String choose = scanner.nextLine();
 
-            switch (choose){
+            switch (choose) {
 
                 case "1":
                     System.out.print("Nhap ten phong ban: ");
@@ -48,7 +49,7 @@ public class QuanLy {
                     break;
 
                 case "3":
-                    if (departments.isEmpty() || positions.isEmpty()){
+                    if (departments.isEmpty() || positions.isEmpty()) {
                         System.out.println("Phai tao department & position truoc!");
                         break;
                     }
@@ -89,30 +90,30 @@ public class QuanLy {
                     break;
 
                 case "4":
-                    if (departments.isEmpty()){
+                    if (departments.isEmpty()) {
                         System.out.println("Danh sach rong");
                     } else {
-                        for (Department d : departments){
+                        for (Department d : departments) {
                             System.out.println(d);
                         }
                     }
                     break;
 
                 case "5":
-                    if (positions.isEmpty()){
+                    if (positions.isEmpty()) {
                         System.out.println("Danh sach rong");
                     } else {
-                        for (Position p : positions){
+                        for (Position p : positions) {
                             System.out.println(p);
                         }
                     }
                     break;
 
                 case "6":
-                    if (accounts.isEmpty()){
+                    if (accounts.isEmpty()) {
                         System.out.println("Danh sach rong");
                     } else {
-                        for (Account a : accounts){
+                        for (Account a : accounts) {
                             System.out.println(a);
                         }
                     }
@@ -123,15 +124,15 @@ public class QuanLy {
                     String searchDep = scanner.nextLine();
 
                     boolean foundDep = false;
-                    for (Account a : accounts){
+                    for (Account a : accounts) {
                         if (a.getDepartment().getDepartmentName()
-                                .equalsIgnoreCase(searchDep)){
+                                .equalsIgnoreCase(searchDep)) {
                             System.out.println(a);
                             foundDep = true;
                         }
                     }
 
-                    if (!foundDep){
+                    if (!foundDep) {
                         System.out.println("Khong tim thay");
                     }
                     break;
@@ -141,15 +142,15 @@ public class QuanLy {
                     String searchPos = scanner.nextLine();
 
                     boolean foundPos = false;
-                    for (Account a : accounts){
+                    for (Account a : accounts) {
                         if (a.getPosition().getPositionName()
-                                .equalsIgnoreCase(searchPos)){
+                                .equalsIgnoreCase(searchPos)) {
                             System.out.println(a);
                             foundPos = true;
                         }
                     }
 
-                    if (!foundPos){
+                    if (!foundPos) {
                         System.out.println("Khong tim thay");
                     }
                     break;
@@ -161,16 +162,16 @@ public class QuanLy {
                     boolean deleted = false;
 
                     Iterator<Account> iterator = accounts.iterator();
-                    while (iterator.hasNext()){
+                    while (iterator.hasNext()) {
                         Account a = iterator.next();
 
-                        if (a.getFullName().equalsIgnoreCase(deleteName)){
+                        if (a.getFullName().equalsIgnoreCase(deleteName)) {
                             iterator.remove();
                             deleted = true;
                         }
                     }
 
-                    if (deleted){
+                    if (deleted) {
                         System.out.println("Da xoa!");
                     } else {
                         System.out.println("Khong tim thay!");
