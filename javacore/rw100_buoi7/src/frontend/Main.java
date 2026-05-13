@@ -7,15 +7,10 @@ import java.sql.SQLException;
 
 public class Main {
     public static void main(String[] args) throws SQLException, ClassNotFoundException {
-        QLDepartment.showDepartment("sale", 2);
+//        DepartmentFunction.run();
+//            PositionFunction.run();
+            AccountFunction.run();
 
-        QLDepartment.showDepartmentHave2Employee();
 
-        QLPosition.showAllPosition();
-        QLPosition.findByPositionName("Dev");
-
-        QLAccount.showAllAccount();
-        QLAccount.findByFullname("Nguyen");
-        QLAccount.findByFullnameAndUsername("Nguyen", "admin");
     }
 }

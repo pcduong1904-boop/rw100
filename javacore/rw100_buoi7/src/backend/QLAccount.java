@@ -1,111 +1,110 @@
 package backend;
-
-
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
+import entity.Account;
+import entity.Department;
+import entity.Position;
+import utils.JDBCUtils;
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class QLAccount {
 
-    public static void showAllAccount() {
-        String url = "jdbc:mysql://localhost:3306/rw100_testing_system";
-        String username = "root";
-        String password = "pcduong1904";
-
+    // Lấy danh sách account
+    public static List<Account> findAllAccount() throws ClassNotFoundException {
+        List<Account> accounts = new ArrayList<>();
         try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            Connection conn = DriverManager.getConnection(url, username, password);
-
-            String sql = "SELECT * FROM Account";
-            PreparedStatement ps = conn.prepareStatement(sql);
-            ResultSet rs = ps.executeQuery();
-
-            System.out.println("=== Danh sach Account ===");
-
+            Connection connection = JDBCUtils.getConnection();
+            String sql = "SELECT acc.*, de.department_name, po.position_name " +
+                    "FROM account acc " +
+                    "LEFT JOIN department de ON acc.department_id = de.department_id " +
+                    "LEFT JOIN position po ON acc.position_id = po.position_id";
+            Statement statement = connection.createStatement();
+            ResultSet rs = statement.executeQuery(sql);
             while (rs.next()) {
-                System.out.println(
-                        rs.getInt("account_id") + " - " +
-                                rs.getString("full_name") + " - " +
-                                rs.getString("username")
-                );
+                int id             = rs.getInt("account_id");
+                String email       = rs.getString("email");
+                String username    = rs.getString("username");
+                String fullName    = rs.getString("full_name");
+                int deptId         = rs.getInt("department_id");
+                String deptName    = rs.getString("department_name");
+                int posId          = rs.getInt("position_id");
+                String posName     = rs.getString("position_name");
+                Date createDate    = rs.getDate("create_date");
+
+                Department department = new Department(deptId, deptName);
+                Position position     = new Position(posId, posName);
+
+                Account account = new Account(id, email, username, fullName, department, position, createDate);
+                accounts.add(account);
             }
-
-            rs.close();
-            ps.close();
-            conn.close();
-
+            JDBCUtils.closeConnection(connection, statement, rs);
         } catch (Exception e) {
-            System.out.println("Loi ket noi");
+            e.printStackTrace();
         }
+        return accounts;
     }
 
-    public static void findByFullname(String fullname) {
-        String url = "jdbc:mysql://localhost:3306/rw100_testing_system";
-        String username = "root";
-        String password = "pcduong1904";
-
+    // Thêm account mới
+    public static boolean createAccount(String email, String username,
+                                        String fullName, int departmentId,
+                                        int positionId) throws ClassNotFoundException {
         try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            Connection conn = DriverManager.getConnection(url, username, password);
-
-            String sql = "SELECT * FROM Account WHERE full_name LIKE ?";
-            PreparedStatement ps = conn.prepareStatement(sql);
-            ps.setString(1, "%" + fullname + "%");
-
-            ResultSet rs = ps.executeQuery();
-
-            System.out.println("=== Tim fullname ===");
-
-            while (rs.next()) {
-                System.out.println(
-                        rs.getInt("account_id") + " - " +
-                                rs.getString("full_name")
-                );
-            }
-
-            rs.close();
-            ps.close();
-            conn.close();
-
+            Connection connection = JDBCUtils.getConnection();
+            String sql = "INSERT INTO account(email, username, full_name, department_id, position_id, create_date) " +
+                    "VALUES (?, ?, ?, ?, ?, ?)";
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setString(1, email);
+            statement.setString(2, username);
+            statement.setString(3, fullName);
+            statement.setInt(4, departmentId);
+            statement.setInt(5, positionId);
+            statement.setDate(6, new Date(System.currentTimeMillis()));
+            int c = statement.executeUpdate();
+            JDBCUtils.closeConnection(connection, statement, null);
+            return c > 0;
         } catch (Exception e) {
-            System.out.println("Loi ket noi");
+            e.printStackTrace();
         }
+        return false;
     }
 
-    public static void findByFullnameAndUsername(String fullname, String usernameInput) {
-        String url = "jdbc:mysql://localhost:3306/rw100_testing_system";
-        String username = "root";
-        String password = "pcduong1904";
-
+    // Sửa account theo ID
+    public static boolean updateAccount(int id, String email, String username,
+                                        String fullName, int departmentId,
+                                        int positionId) throws ClassNotFoundException {
         try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            Connection conn = DriverManager.getConnection(url, username, password);
-
-            String sql = "SELECT * FROM Account WHERE full_name LIKE ? AND username LIKE ?";
-            PreparedStatement ps = conn.prepareStatement(sql);
-
-            ps.setString(1, "%" + fullname + "%");
-            ps.setString(2, "%" + usernameInput + "%");
-
-            ResultSet rs = ps.executeQuery();
-
-            System.out.println("=== Tim fullname + username ===");
-
-            while (rs.next()) {
-                System.out.println(
-                        rs.getInt("account_id") + " - " +
-                                rs.getString("full_name") + " - " +
-                                rs.getString("username")
-                );
-            }
-
-            rs.close();
-            ps.close();
-            conn.close();
-
+            Connection connection = JDBCUtils.getConnection();
+            String sql = "UPDATE account SET email=?, username=?, full_name=?, " +
+                    "department_id=?, position_id=? WHERE account_id=?";
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setString(1, email);
+            statement.setString(2, username);
+            statement.setString(3, fullName);
+            statement.setInt(4, departmentId);
+            statement.setInt(5, positionId);
+            statement.setInt(6, id);
+            int c = statement.executeUpdate();
+            JDBCUtils.closeConnection(connection, statement, null);
+            return c > 0;
         } catch (Exception e) {
-            System.out.println("Loi ket noi");
+            e.printStackTrace();
         }
+        return false;
+    }
+
+    // Xóa account theo ID
+    public static boolean deleteAccount(int id) throws ClassNotFoundException {
+        try {
+            Connection connection = JDBCUtils.getConnection();
+            String sql = "DELETE FROM account WHERE account_id=?";
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setInt(1, id);
+            int c = statement.executeUpdate();
+            JDBCUtils.closeConnection(connection, statement, null);
+            return c > 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 }

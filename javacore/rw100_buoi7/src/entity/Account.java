@@ -87,7 +87,7 @@ public class Account {
                 ", FullName: " + fullName +
                 ", Email: " + email +
                 ", Username: " + username +
-                ", Department: " + (department != null ? department.getDepartmentName() : "null") +
+                ", Department: " + (department != null ? department.getName() : "null") +
                 ", Position: " + (position != null ? position.getPositionName() : "null") +
                 ", CreateDate: " + createDate;
     }
