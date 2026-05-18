@@ -1,4 +1,4 @@
-package utils;
+package com.vti.utils;
 import java.sql.*;
 
 public class JDBCUtils {

@@ -1,4 +1,4 @@
-package entity;
+package com.vti.entity;
 
 public class Department {
     private int id;
