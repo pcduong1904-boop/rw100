@@ -1,30 +1,46 @@
 package com.vti.backend.controller;
+
 import com.vti.backend.service.IAccountService;
 import com.vti.backend.service.impl.AccountServiceImpl;
 import com.vti.entity.Account;
+
 import java.util.List;
+import java.util.Map;
 
 public class AccountController {
+    // khoi tao accountService
     private IAccountService accountService = new AccountServiceImpl();
 
-    public boolean createAccount(String email, String username, String fullName, int deptId, int posId) {
-        boolean check = accountService.createAccount(id ,fullName ,email , username, positionId, departmentId);
-        return check;
+
+    public List<Account> findAll() {
+        return accountService.findAll();
     }
 
-    public boolean updateAccount(int id, String email, String username, String fullName, int deptId, int posId) {
-        boolean check = accountService.updateAccount( id ,fullName ,email , username, positionId, departmentId);
-        return check;
+    public boolean create(String email, String username, String fullName, int departmentID, int positionID) {
+        return accountService.create(email, username, fullName, departmentID, positionID);
     }
 
-    public boolean deleteAccount(int id) {
-        boolean check = accountService.deleteAccount(id);
-        return check;
+    public boolean update(int id, String updateName, String email, String username, int departmentId, int positionId) {
+        return accountService.update(id, updateName, email, username, departmentId, positionId);
     }
 
-    public List<Account> findAll(){
-        //lay ds tu service
-        List<Account> accounts = accountService.findAll();
-        return accounts;
+    public boolean delete(int id) {
+        return accountService.delete(id);
+    }
+
+    public Map<String, Account> mapAccountByUsername() {
+        return accountService.mapAccountByUsername();
+    }
+
+    public boolean checkExistEmail(String email, Integer id) {
+        return accountService.checkExistEmail( email,  id);
+    }
+
+    public boolean checkExistUsername(String username, Integer id) {
+        return accountService.checkExistUsername(username , id);
+    }
+
+    public boolean checkExistID(int id) {
+        return accountService.checkExistID(id);
     }
 }

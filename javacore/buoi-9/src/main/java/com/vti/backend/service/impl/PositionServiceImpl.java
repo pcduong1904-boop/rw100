@@ -1,36 +1,44 @@
 package com.vti.backend.service.impl;
 
-import com.vti.backend.repository.IPostitionRepository;
+import com.vti.backend.repository.IPositionRepository;
 import com.vti.backend.repository.impl.PositionRepositoryImpl;
 import com.vti.backend.service.IPositionService;
 import com.vti.entity.Position;
+import com.vti.enums.PositionName;
 
 import java.util.List;
 
 public class PositionServiceImpl implements IPositionService {
-    private IPostitionRepository positionRepository  = new PositionRepositoryImpl();
-        @Override
-        public List<Position> findAll() {
-            List<Position> positions = positionRepository.findAll();
-            return positions;
-        }
+    // khoi tao positionRepository
+    private IPositionRepository positionRepository = new PositionRepositoryImpl();
 
     @Override
-    public boolean create(String name) {
-        boolean check = positionRepository. create(name);
-        return check;
+    public List<Position> findAll() {
+        return positionRepository.findAll();
+    }
+
+    @Override
+    public boolean create(PositionName name) {
+        return positionRepository.create(name);
+    }
+
+    @Override
+    public boolean update(int id, PositionName name) {
+        return positionRepository.update(id, name);
     }
 
     @Override
     public boolean delete(int id) {
-        boolean check = positionRepository.delete(id);
-        return check;
+        return positionRepository.delete(id);
     }
 
     @Override
-    public boolean update(int id, String name) {
-        boolean check = positionRepository.update(id, name);
-        return check;
+    public boolean checkExistNameAndIdNot(String name, Integer id) {
+        return positionRepository.checkExistNameAndIdNot(name,id);
+    }
+
+    @Override
+    public boolean checkExistID(Integer id) {
+        return positionRepository.checkExistID(id);
     }
 }
-

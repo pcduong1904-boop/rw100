@@ -1,39 +1,54 @@
 package com.vti.backend.service.impl;
 
-import com.vti.backend.repository.IAccountRepository;
 import com.vti.backend.repository.impl.AccountRepositoryImpl;
 import com.vti.backend.service.IAccountService;
 import com.vti.entity.Account;
 
 import java.util.List;
+import java.util.Map;
 
 public class AccountServiceImpl implements IAccountService {
-    private IAccountRepository accountRepository  = new AccountRepositoryImpl();
+    // khoi tao accountRepository
+    private AccountRepositoryImpl accountRepository = new AccountRepositoryImpl();
+
+
     @Override
     public List<Account> findAll() {
-        List<Account> accounts =accountRepository.findAll();
-        return accounts;
+        return accountRepository.findAll();
     }
 
     @Override
-    public boolean deleteAccount(int id) {
-        boolean check = accountRepository.deleteAccount(id);
-        return check;
+    public boolean create(String email, String username, String fullName, int departmentID, int positionID) {
+        return accountRepository.create(email, username, fullName, departmentID, positionID);
     }
 
     @Override
-    public boolean updateAccount(int id, String email, String username,
-                                 String fullName, int departmentId,
-                                 int positionId) {
-        boolean check = accountRepository.updateAccount(id ,fullName ,email , username, positionId, departmentId );
-        return check;
+    public boolean update(int id, String updateName, String email, String username, int departmentId, int positionId) {
+        return accountRepository.update(id, updateName, email, username, departmentId, positionId);
     }
 
     @Override
-    public boolean createAccount(int id, String email, String username,
-                                 String fullName, int departmentId,
-                                 int positionId) {
-        boolean check = accountRepository.createAccount( id ,fullName ,email , username, positionId, departmentId);
-        return check;
+    public boolean delete(int id) {
+        return accountRepository.delete(id);
+    }
+
+    @Override
+    public Map<String, Account> mapAccountByUsername() {
+        return accountRepository.mapAccountByUsername();
+    }
+
+    @Override
+    public boolean checkExistID(int id) {
+        return accountRepository.checkExistID(id);
+    }
+
+    @Override
+    public boolean checkExistUsername(String username, Integer id) {
+        return accountRepository.checkExistUsername(username,id);
+    }
+
+    @Override
+    public boolean checkExistEmail(String email, Integer id) {
+        return accountRepository.checkExistEmail(email, id);
     }
 }

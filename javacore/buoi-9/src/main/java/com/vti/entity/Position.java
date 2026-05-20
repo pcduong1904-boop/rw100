@@ -1,39 +1,34 @@
 package com.vti.entity;
 
+
+import com.vti.enums.PositionName;
+
 public class Position {
-    private  int positionId;
-    private  String positionName;
+    private int id;
+    private PositionName name;
 
-    public Position(){
+    public Position() {
 
     }
 
-    public Position(int positionId, String positionName) {
-        this.positionId = positionId;
-        this.positionName = positionName;
+    public Position(int id, PositionName name) {
+        this.id = id;
+        this.name = name;
     }
 
-    public int getPositionId() {
-        return positionId;
+    public int getId() {
+        return id;
     }
 
-    public void setPositionId(int positionId) {
-        this.positionId = positionId;
+    public void setId(int id) {
+        this.id = id;
     }
 
-    public String getPositionName() {
-        return positionName;
+    public PositionName getName() {
+        return name;
     }
 
-    public void setPositionName(String positionName) {
-        this.positionName = positionName;
-    }
-
-    @Override
-    public String toString() {
-        return "Position{" +
-                "positionId=" + positionId +
-                ", positionName='" + positionName + '\'' +
-                '}';
+    public void setName(PositionName name) {
+        this.name = name;
     }
 }

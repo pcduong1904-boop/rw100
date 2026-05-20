@@ -3,42 +3,44 @@ package com.vti.entity;
 import java.util.Date;
 
 public class Account {
-    private int accountID;
-    private String email;
+    private int id;
     private String username;
     private String fullName;
-    private Department department; // khóa ngoại
-    private Position position;     // khóa ngoại
+    private String email;
+    private Department department;
+    private Position position;
     private Date createDate;
 
-    public Account(){
+    public Account() {
 
     }
 
-    public Account(int accountID, String email, String username, String fullName, Department department, Position position, Date createDate) {
-        this.accountID = accountID;
-        this.email = email;
+    public Account(int id, String username, String fullName, String email, Department department, Position position) {
+        this.id = id;
         this.username = username;
         this.fullName = fullName;
+        this.email = email;
+        this.department = department;
+        this.position = position;
+        this.createDate = new Date();
+    }
+
+    public Account(int id, String username, String fullName, String email, Department department, Position position, Date createDate) {
+        this.id = id;
+        this.username = username;
+        this.fullName = fullName;
+        this.email = email;
         this.department = department;
         this.position = position;
         this.createDate = createDate;
     }
 
-    public int getAccountID() {
-        return accountID;
+    public int getId() {
+        return id;
     }
 
-    public void setAccountID(int accountID) {
-        this.accountID = accountID;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getUsername() {
@@ -55,6 +57,14 @@ public class Account {
 
     public void setFullName(String fullName) {
         this.fullName = fullName;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public Department getDepartment() {
@@ -79,16 +89,5 @@ public class Account {
 
     public void setCreateDate(Date createDate) {
         this.createDate = createDate;
-    }
-
-    @Override
-    public String toString() {
-        return "ID: " + accountID +
-                ", FullName: " + fullName +
-                ", Email: " + email +
-                ", Username: " + username +
-                ", Department: " + (department != null ? department.getName() : "null") +
-                ", Position: " + (position != null ? position.getPositionName() : "null") +
-                ", CreateDate: " + createDate;
     }
 }

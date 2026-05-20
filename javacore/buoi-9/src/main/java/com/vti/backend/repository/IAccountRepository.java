@@ -1,21 +1,25 @@
 package com.vti.backend.repository;
 
 import com.vti.entity.Account;
-import com.vti.entity.Position;
 
 import java.util.List;
+import java.util.Map;
 
 public interface IAccountRepository {
+    Map<String, Account> mapByUsername();
     List<Account> findAll();
 
-    boolean deleteAccount(int id);
+    boolean create(String email, String username, String fullName, int departmentID, int positionID);
 
+    boolean update(int id, String updateName, String email, String username, int departmentId, int positionId);
 
-    boolean updateAccount(int id, String email, String username,
-                          String fullName, int departmentId,
-                          int positionId);
+    boolean delete(int id);
 
-    boolean createAccount(String email, String username,
-                          String fullName, int departmentId,
-                          int positionId);
+    Map<String, Account> mapAccountByUsername();
+
+    boolean checkExistID(int id);
+
+    boolean checkExistUsername(String username, Integer id);
+
+    boolean checkExistEmail(String email, Integer id);
 }

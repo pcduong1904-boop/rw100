@@ -1,36 +1,37 @@
 package com.vti.backend.controller;
 
-import com.vti.backend.repository.IPostitionRepository;
 import com.vti.backend.service.IPositionService;
 import com.vti.backend.service.impl.PositionServiceImpl;
 import com.vti.entity.Position;
+import com.vti.enums.PositionName;
 
 import java.util.List;
 
 public class PositionController {
-    //khoi tao departmentSevice
-    private IPositionService postitionService = new PositionServiceImpl();
+    // khoi tao positionService
+    private IPositionService positionService = new PositionServiceImpl();
 
-    public boolean update(int id, String name) {
-        boolean check = postitionService.update(id , name);
-        return check;
+    public List<Position> findAll() {
+        return positionService.findAll();
+    }
+
+    public boolean create(PositionName name) {
+        return positionService.create(name);
+    }
+
+    public boolean update(int id, PositionName name) {
+        return positionService.update(id, name);
     }
 
     public boolean delete(int id) {
-        boolean check = postitionService.delete(id);
-        return check;
+        return positionService.delete(id);
     }
 
-    public boolean create(String name) {
-        boolean check = postitionService.create(name);
-        return check;
+    public boolean checkExistNameAndIdNot(String name, Integer id) {
+        return positionService.checkExistNameAndIdNot(name, id);
     }
 
-    public List<Position> findAll() {
-        List<Position> positions = postitionService.findAll();
-        return positions;
+    public boolean checkExistID(Integer id) {
+        return positionService.checkExistID(id);
     }
 }
-
-
-

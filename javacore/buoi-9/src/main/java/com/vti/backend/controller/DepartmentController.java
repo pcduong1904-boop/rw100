@@ -31,4 +31,11 @@ public class DepartmentController {
         boolean check = departmentService.update(id,name);
         return check;
     }
+    public boolean checkExistNameAndIdNot(String name, Integer id) {
+        return departmentService.checkExistNameAndIdNot(name, id);
+    }
+
+    public boolean checkExistID(Integer id) {
+        return departmentService.checkExistID(id);
+    }
 }

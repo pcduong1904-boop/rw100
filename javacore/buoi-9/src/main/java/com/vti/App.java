@@ -12,10 +12,10 @@ public class App {
     public static void main(String[] args) throws ClassNotFoundException {
 //        DepartmentFunction function = new DepartmentFunction();
 //        function.run();
-//        PositionFunction function = new PositionFunction();
-//        function.run();
-        AccountFunction function = new AccountFunction();
+        PositionFunction function = new PositionFunction();
         function.run();
+//        AccountFunction function = new AccountFunction();
+//        function.run();
     }
 }
 
