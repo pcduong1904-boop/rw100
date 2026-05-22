@@ -17,80 +17,87 @@ public class PositionRepositoryImpl implements IPositionRepository {
 
     @Override
     public List<Position> findAll() {
-        List<Position> positions = new ArrayList<>();// lưu lại dữ liệu lấy từ DB
+        List<Position> positions = new ArrayList<>();
+        Connection connection = null;
+        Statement statement = null;
+        ResultSet rs = null;
         try {
-            // b1: kết nối đến DB
-            Connection connection = JDBCUtils.getConnection();
-            // b2: lấy dữ liệu từ bảng position
+            connection = JDBCUtils.getConnection();
             String sql = "select * from position;";
-            Statement statement = connection.createStatement();
-            ResultSet rs = statement.executeQuery(sql);// thực thi câu lệnh sql và gán bảng trả ra vào ResultSet rs
-            while (rs.next()) {// lặp qua qua từng dòng của rs
-                int id = rs.getInt("position_id");// lấy giá trị từ column position_id
-                String name = rs.getString("position_name");//lấy giá trị từ column position_name
+            statement = connection.createStatement();
+            rs = statement.executeQuery(sql);
+            while (rs.next()) {
+                int id = rs.getInt("position_id");
+                String name = rs.getString("position_name");
                 PositionName positionName = PositionName.valueOf(name);
-
                 Position po = new Position(id, positionName);
                 positions.add(po);
             }
-
         } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+            JDBCUtils.closeConnection(connection, statement, rs);
         }
         return positions;
     }
 
     @Override
     public boolean create(PositionName name) {
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
         try {
-            // b1: kết nối đến DB
-            Connection connection = JDBCUtils.getConnection();
-            // b2: tiến hành thêm mới position
+            connection = JDBCUtils.getConnection();
             String sql = "insert into position (position_name) values (?);";
-            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setString(1, name.name());
 
-            int c = preparedStatement.executeUpdate();// executeUpdate sẽ trả về 1 số nguyên, đại diện cho số dòng bị thay đổi trong DB
+            int c = preparedStatement.executeUpdate();
             return c > 0;
-        } catch (Exception e) {// show các lỗi lien quan đén logic xử lý
-            e.printStackTrace();// show ra exception
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            JDBCUtils.closeConnection(connection, preparedStatement, null);
         }
         return false;
     }
 
     @Override
     public boolean update(int id, PositionName name) {
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
         try {
-            // b1: kết nối đến DB
-            Connection connection = JDBCUtils.getConnection();
-            // b2: tiến hành update position
+            connection = JDBCUtils.getConnection();
             String sql = "update position set position_name = ? where position_id = ?;";
-            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setString(1, name.name());
             preparedStatement.setInt(2, id);
 
-            int c = preparedStatement.executeUpdate();// executeUpdate sẽ trả về 1 số nguyên, đại diện cho số dòng bị thay đổi trong DB
-            return  c > 0;
-        } catch (Exception e) {// show các lỗi lien quan đén logic xử lý
-            e.printStackTrace();// show ra exception
+            int c = preparedStatement.executeUpdate();
+            return c > 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            JDBCUtils.closeConnection(connection, preparedStatement, null);
         }
         return false;
     }
 
     @Override
     public boolean delete(int id) {
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
         try {
-            // b1: kết nối đến DB
-            Connection connection = JDBCUtils.getConnection();
-            // b2: tiến hành xóa position
+            connection = JDBCUtils.getConnection();
             String sql = "delete from position where position_id = ?;";
-            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setInt(1, id);
 
-            int c = preparedStatement.executeUpdate();// executeUpdate sẽ trả về 1 số nguyên, đại diện cho số dòng bị thay đổi trong DB
+            int c = preparedStatement.executeUpdate();
             return c > 0;
-        } catch (Exception e) {// show các lỗi lien quan đén logic xử lý
-            e.printStackTrace();// show ra exception
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            JDBCUtils.closeConnection(connection, preparedStatement, null);
         }
         return false;
     }
@@ -98,53 +105,53 @@ public class PositionRepositoryImpl implements IPositionRepository {
     @Override
     public boolean checkExistID(Integer id) {
         boolean check = false;
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet rs = null;
         try {
-            // b1: kết nối đến DB
-            Connection connection = JDBCUtils.getConnection();
-            // b2: lấy dữ liệu từ bảng department
-            String sql = "select * from department where position_id = ? ";
-
-            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            connection = JDBCUtils.getConnection();
+            String sql = "select * from position where position_id = ?";
+            preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setInt(1, id);
 
-            ResultSet rs = preparedStatement.executeQuery();// thực thi câu lệnh sql và gán bảng trả ra vào ResultSet rs
-            if (rs.next()) {// lặp qua qua từng dòng của rs
+            rs = preparedStatement.executeQuery();
+            if (rs.next()) {
                 check = true;
             }
-            // đóng các kết nối
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
             JDBCUtils.closeConnection(connection, preparedStatement, rs);
-        } catch (Exception e) {// show các lỗi lien quan đén logic xử lý
-            e.printStackTrace();// show ra exception
         }
         return check;
     }
 
-
     @Override
-    public boolean checkExistNameAndIdNot(String name, Integer id) {// neu id null thi tao moi
+    public boolean checkExistNameAndIdNot(String name, Integer id) {
         boolean check = false;
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet rs = null;
         try {
-            // b1: kết nối đến DB
-            Connection connection = JDBCUtils.getConnection();
-            // b2: lấy dữ liệu từ bảng department
+            connection = JDBCUtils.getConnection();
             String sql = "select * from position where position_name like ? ";
-            if (Objects.nonNull(id)) {// check update
+            if (Objects.nonNull(id)) {
                 sql += "and position_id != ? ";
             }
-            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setString(1, name);
-            if (Objects.nonNull(id)) {// check update
+            if (Objects.nonNull(id)) {
                 preparedStatement.setInt(2, id);
             }
 
-            ResultSet rs = preparedStatement.executeQuery();// thực thi câu lệnh sql và gán bảng trả ra vào ResultSet rs
-            if (rs.next()) {// lặp qua qua từng dòng của rs
+            rs = preparedStatement.executeQuery();
+            if (rs.next()) {
                 check = true;
             }
-            // đóng các kết nối
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
             JDBCUtils.closeConnection(connection, preparedStatement, rs);
-        } catch (Exception e) {// show các lỗi lien quan đén logic xử lý
-            e.printStackTrace();// show ra exception
         }
         return check;
     }

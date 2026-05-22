@@ -1,39 +1,42 @@
 package com.vti.utils;
+
 import java.sql.*;
 
 public class JDBCUtils {
-        public static Connection getConnection(){
-            String url = "jdbc:mysql://localhost:3306/rw100_testing_system";
-            String username = "root";
-            String password = "pcduong1904";
+    public static Connection getConnection() {
+        String url = "jdbc:mysql://localhost:3306/rw100_testing_system";
+        String username = "root";
+        String password = "root";// mk mysql
 
-            try {
-                // b1: ket noi den DB
-                    Class.forName("com.mysql.cj.jdbc.Driver");
-
-                    Connection connection = DriverManager.getConnection(url, username, password);
-                 /*   if (connection != null) {
-                        System.out.println("ket noi db thanh cong");
-                    }*/
-
-                    return connection;
-                } catch (Exception e) {
-                    System.out.println("ket noi database khong thanh cong");
-                }
-
-            return null;
+        try {
+            // b1: kết nối đến DB
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            Connection connection = DriverManager.getConnection(url, username, password);
+//            if (connection != null) {
+//                System.out.println("Kết nối DB thành công");
+//            }
+            return connection;
+        } catch (Exception e) {
+            System.out.println("Kết nối DB ko thành công");
         }
+        return null;
+    }
 
-        public static void closeConnection(Connection connection, Statement statement, ResultSet rs ) throws SQLException {
-            // neu cai nao co du lieu (dang mo) != null
-            if (connection != null){
+    // close cho 3 interface connection,statement,rs
+    public static void closeConnection(Connection connection, Statement statement, ResultSet rs) {
+        // nếu cái nào có dữ liệu (đang mở) != null
+        try{
+            if (connection != null) {
                 connection.close();
             }
-            if (statement != null){
+            if (statement != null) {
                 statement.close();
             }
-            if (rs != null){
+            if (rs != null) {
                 rs.close();
             }
+        }catch (Exception e){
+            e.printStackTrace();
         }
+    }
 }

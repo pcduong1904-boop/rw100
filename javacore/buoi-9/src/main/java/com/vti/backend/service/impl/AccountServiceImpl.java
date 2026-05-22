@@ -1,5 +1,6 @@
 package com.vti.backend.service.impl;
 
+import com.vti.backend.repository.IAccountRepository;
 import com.vti.backend.repository.impl.AccountRepositoryImpl;
 import com.vti.backend.service.IAccountService;
 import com.vti.entity.Account;
@@ -9,7 +10,7 @@ import java.util.Map;
 
 public class AccountServiceImpl implements IAccountService {
     // khoi tao accountRepository
-    private AccountRepositoryImpl accountRepository = new AccountRepositoryImpl();
+    private IAccountRepository accountRepository = new AccountRepositoryImpl();
 
 
     @Override
@@ -38,17 +39,22 @@ public class AccountServiceImpl implements IAccountService {
     }
 
     @Override
-    public boolean checkExistID(int id) {
-        return accountRepository.checkExistID(id);
+    public boolean checkUsernameExist(String username,  Integer id) {
+        return accountRepository.checkUsernameExist(username, id);
     }
 
     @Override
-    public boolean checkExistUsername(String username, Integer id) {
-        return accountRepository.checkExistUsername(username,id);
+    public boolean checkEmailExist(String email) {
+        return accountRepository.checkEmailExist(email);
     }
 
     @Override
-    public boolean checkExistEmail(String email, Integer id) {
-        return accountRepository.checkExistEmail(email, id);
+    public boolean checkIdExist(Integer id) {
+        return accountRepository.checkIdExist(id);
+    }
+
+    @Override
+    public boolean update(int id, String updateName) {
+        return accountRepository.update(id, updateName);
     }
 }

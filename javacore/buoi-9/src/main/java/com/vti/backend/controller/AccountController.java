@@ -32,15 +32,19 @@ public class AccountController {
         return accountService.mapAccountByUsername();
     }
 
-    public boolean checkExistEmail(String email, Integer id) {
-        return accountService.checkExistEmail( email,  id);
+    public boolean checkUsernameExist(String username, Integer id) {
+        return accountService.checkUsernameExist(username, id);
     }
 
-    public boolean checkExistUsername(String username, Integer id) {
-        return accountService.checkExistUsername(username , id);
+    public boolean checkEmailExist(String email) {
+        return accountService.checkEmailExist(email);
     }
 
-    public boolean checkExistID(int id) {
-        return accountService.checkExistID(id);
+    public boolean checkIdExist(Integer id) {
+        return accountService.checkIdExist(id);
+    }
+
+    public boolean update(int id, String updateName) {
+        return accountService.update(id, updateName);
     }
 }
