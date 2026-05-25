@@ -10,10 +10,10 @@ import com.vti.frontend.PositionFunction;
  */
 public class App {
     public static void main(String[] args) throws ClassNotFoundException {
-//        DepartmentFunction function = new DepartmentFunction();
-//        function.run();
-        PositionFunction function = new PositionFunction();
+        DepartmentFunction function = new DepartmentFunction();
         function.run();
+//        PositionFunction function = new PositionFunction();
+//        function.run();
 //        AccountFunction function = new AccountFunction();
 //        function.run();
     }

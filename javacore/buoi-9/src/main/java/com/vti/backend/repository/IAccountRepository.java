@@ -2,6 +2,7 @@ package com.vti.backend.repository;
 
 import com.vti.entity.Account;
 
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
@@ -24,4 +25,6 @@ public interface IAccountRepository {
     boolean checkIdExist(Integer id);
 
     boolean update(int id, String updateName);
+
+    boolean createAccounts(List<Account> accounts);
 }

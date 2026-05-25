@@ -60,6 +60,31 @@ public class DepartmentRepositoryImpl implements IDepartmentRepository {
     }
 
     @Override
+    public boolean createListDepartment(List<Department> list) {
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        try {
+            // b1: kết nối đến DB
+            connection = JDBCUtils.getConnection();
+            // b2: tiến hành thêm mới department
+            String sql = "insert into department (department_name) values (?);";
+            preparedStatement = connection.prepareStatement(sql);
+            for (Department department : list) {
+                preparedStatement.setString(1, department.getName());
+                preparedStatement.addBatch();
+            }
+
+            preparedStatement.executeBatch();// executeBatch chay cau lenh insert nhieu ptu
+            return true;
+        } catch (Exception e) {// show các lỗi lien quan đén logic xử lý
+            e.printStackTrace();// show ra exception
+        } finally {
+            JDBCUtils.closeConnection(connection, preparedStatement, null);
+        }
+        return false;
+    }
+
+    @Override
     public boolean update(int id, String name) {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
@@ -123,6 +148,8 @@ public class DepartmentRepositoryImpl implements IDepartmentRepository {
         }
         return check;
     }
+
+
 
     @Override
     public boolean checkExistNameAndIdNot(String name, Integer id) {

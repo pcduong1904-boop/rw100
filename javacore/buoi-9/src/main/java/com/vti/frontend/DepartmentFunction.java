@@ -19,7 +19,7 @@ public class DepartmentFunction {
             System.out.println("2. Thêm mới phòng ban");
             System.out.println("3. Update phòng ban");
             System.out.println("4. Xóa phòng ban");
-            System.out.println("5. Tìm kiếm phòng ban");
+            System.out.println("5. import file");
             System.out.println("6. Thoát");
 
             String choice = scanner.nextLine();
@@ -38,11 +38,31 @@ public class DepartmentFunction {
                 case "4":
                     this.deleteDepartment();
                     break;
+                case "5":
+                    this.importDepartmentFromCSV();
+                    break;
+                case "6":
+
+                    return;
                 default:
                     System.out.println("Chọn sai, chọn lại!");
             }
         }
     }
+
+
+
+
+
+    public void importDepartmentFromCSV(){
+        System.out.println("=== Import file CSV====");
+        System.out.println("Moi ban nhap duong dan");
+        //C:\Users\pcduo\OneDrive\Desktop\rw100\csv\input_department.csv
+        String pathName = scanner.nextLine();
+        String message = departmentController.importDepartmentFromCSV(pathName);
+        System.out.println(message);
+        }
+
 
     public void deleteDepartment() {
         System.out.println("Nhập ID phòng ban cần xóa: ");
