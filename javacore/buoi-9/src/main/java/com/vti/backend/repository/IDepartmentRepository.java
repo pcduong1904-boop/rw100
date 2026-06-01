@@ -3,6 +3,7 @@ package com.vti.backend.repository;
 import com.vti.entity.Department;
 
 import java.util.List;
+import java.util.Map;
 
 public interface IDepartmentRepository {
     List<Department> findAll();
@@ -18,4 +19,5 @@ public interface IDepartmentRepository {
 
     boolean checkExistID(Integer id);
 
+    Map<String, Department> mapByName();
 }

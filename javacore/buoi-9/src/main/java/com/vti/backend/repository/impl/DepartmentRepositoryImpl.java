@@ -3,14 +3,11 @@ package com.vti.backend.repository.impl;
 import com.vti.backend.repository.IDepartmentRepository;
 import com.vti.entity.Department;
 import com.vti.utils.JDBCUtils;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 public class DepartmentRepositoryImpl implements IDepartmentRepository {
 
@@ -179,5 +176,44 @@ public class DepartmentRepositoryImpl implements IDepartmentRepository {
             JDBCUtils.closeConnection(connection, preparedStatement, rs);
         }
         return check;
+    }
+
+    @Override
+    public Map<String, Department> mapByName() {
+
+        Connection connection = null;
+        Statement statement = null;
+        ResultSet rs = null;
+
+        // key: name
+        // value: Department
+        Map<String, Department> mapByName = new HashMap<>();
+
+        try {
+            // b1: kết nối đến DB
+            connection = JDBCUtils.getConnection();
+
+            // b2: lấy dữ liệu từ bảng department
+            String sql = "select * from department order by department_id asc;";
+            statement = connection.createStatement();
+            rs = statement.executeQuery(sql);
+
+            // duyệt từng dòng
+            while (rs.next()) {
+                int id = rs.getInt("department_id");
+                String name = rs.getString("department_name");
+
+                Department dep = new Department(id, name);
+
+                mapByName.put(name, dep);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            JDBCUtils.closeConnection(connection, statement, rs);
+        }
+
+        return mapByName;
     }
 }

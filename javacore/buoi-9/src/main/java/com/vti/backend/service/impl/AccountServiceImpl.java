@@ -7,12 +7,17 @@ import com.vti.backend.repository.impl.AccountRepositoryImpl;
 import com.vti.backend.repository.impl.DepartmentRepositoryImpl;
 import com.vti.backend.repository.impl.PositionRepositoryImpl;
 import com.vti.backend.service.IAccountService;
+import com.vti.dto.ImportError;
+import com.vti.dto.context.AccountContext;
+import com.vti.dto.csv.AccountCsv;
 import com.vti.entity.Account;
 import com.vti.entity.Department;
 import com.vti.entity.Position;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -70,55 +75,75 @@ public class AccountServiceImpl implements IAccountService {
         return accountRepository.update(id, updateName);
     }
 
+
     @Override
     public String importAccountFromCSV(String pathName) {
-        if (!pathName.endsWith(".csv")) {
-            return "File ko đúng định dạng!";
+
+        AccountContext context = new AccountContext(accountRepository.mapAccountByUsername());
+
+        return importFileCSV(pathName, context, "error_account.csv");
+    }
+
+    @Override
+    public void validation(String line, AccountContext context, List<Account> entities, List<ImportError<AccountCsv>> importErrors) {
+        List<String> errors = new ArrayList<>();
+
+        String[] fields = line.split(",");
+
+        String username = fields[0];
+        String email = fields[1];
+
+        // validate username
+        if (username == null || username.trim().isEmpty()) {
+            errors.add("Username không được trống");
+        } else if (context.getMapByUsername().get(username) != null) {
+            errors.add("Username đã tồn tại");
         }
-        List<Account> accounts = new ArrayList<>();
-        boolean firstLine = true;
-        boolean checkImport = false;
-        String header = "";
-        int accountID = 0;
-        List<Department> departments = departmentRepository.findAll();// kiem tra xem departmentID import vao co ton tai hay ko
-        List<Position> positions = positionRepository.findAll();
-        try (BufferedReader br = new BufferedReader(new FileReader(pathName))) {
-            header = br.readLine();// bo di dong header
-            String line;
-            while ((line = br.readLine()) != null) {
-                String[] fields = line.split(",", -1);
-                List<String> errors = new ArrayList<>();
-                String username = fields[0];
-                String fullName = fields[1];
-                String email = fields[2];
-                String departmentId = fields[3];
-                String positionId = fields[4];
 
-                Department department = null;
-                for (Department de : departments) {
-                    if (de.getId() == Integer.parseInt(departmentId)) {
-                        department = de;
-                        break;
-                    }
-                }
+        // validate email
+        if (email == null || email.trim().isEmpty()) {
+            errors.add("Email không được trống");
+        } else if (!email.contains("@")) {
+            errors.add("Email không hợp lệ");
+        }
 
-                Position position = null;
-                for (Position po : positions) {
-                    if (po.getId() == Integer.parseInt(positionId)) {
-                        position = po;
-                        break;
-                    }
-                }
-                Account account = new Account(username, fullName, email, department, position);
-                accounts.add(account);
+        //
+        if (errors.isEmpty()) {
+            Account acc = new Account(username, email);
+            entities.add(acc);
+            context.getMapByUsername().put(username, acc);
+        } else {
+            AccountCsv csv = new AccountCsv(username, email);
+            ImportError<AccountCsv> error = new ImportError<>(csv, errors);
+            importErrors.add(error);
+        }
+    }
+
+    @Override
+    public void saveAll(List<Account> entities) {
+        for (Account acc : entities) {
+            System.out.println("Lưu account: " + acc);
+        }
+    }
+
+    @Override
+    public void exportFileError(List<ImportError<AccountCsv>> errors, String pathError) {
+
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(pathError))) {
+
+            bw.write("username,email,error");
+            bw.newLine();
+
+            for (ImportError<AccountCsv> e : errors) {
+                String line = e.getCsv().toString() + "," + e.getMessage();
+                bw.write(line);
+                bw.newLine();
             }
-            if (!accounts.isEmpty()) {
-                checkImport = accountRepository.createAccounts(accounts);
-            }
+
+            System.out.println("Đã xuất file lỗi: " + pathError);
+
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-        return  "Import thành công";
     }
 }

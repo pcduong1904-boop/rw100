@@ -3,12 +3,17 @@ package com.vti.backend.service.impl;
 import com.vti.backend.repository.IDepartmentRepository;
 import com.vti.backend.repository.impl.DepartmentRepositoryImpl;
 import com.vti.backend.service.IDepartmentService;
+import com.vti.dto.ImportError;
+import com.vti.dto.context.DepartmentContext;
+import com.vti.dto.csv.DepartmentCsv;
 import com.vti.entity.Department;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 public class DepartmentSeviceImpl implements IDepartmentService {
     // khoi tao doi tuong departmentRepository
@@ -50,35 +55,106 @@ public class DepartmentSeviceImpl implements IDepartmentService {
         return departmentRepository.checkExistID(id);
     }
 
+
+    @Override
+    public void validation(String line, DepartmentContext context, List<Department> entities, List<ImportError<DepartmentCsv>> importErrors) {
+
+        List<String> errors = new ArrayList<>(); // lưu lại ds lỗi
+
+        String[] fields = line.split(",", -1);
+        String departmentName = fields[0];
+
+        // validation
+        if (Objects.isNull(departmentName) || departmentName.trim().isEmpty()) {
+            errors.add("Tên phòng ban ko được để trống");
+        } else if (departmentName.length() > 100) {
+            errors.add("Tên phòng ban ko được dài quá 100 kí tự");
+        } else if (context.getMapByName().get(departmentName) != null) {
+            errors.add("Tên phòng ban đã tồn tại");
+        }
+
+        if (errors.isEmpty()) {
+            Department dep = new Department(departmentName);
+            entities.add(dep);
+
+            // check tồn tại cho file có nhiều gtri trùng lặp
+            context.getMapByName().put(departmentName, dep);
+
+        } else {
+            DepartmentCsv csv = new DepartmentCsv(departmentName);
+            ImportError importError = new ImportError(csv, errors);
+            importErrors.add(importError);
+        }
+
+    }
+
+    @Override
+    public void saveAll(List<Department> entities) {
+        departmentRepository.createListDepartment(entities);
+    }
+
+    @Override
+    public void exportFileError(List<ImportError<DepartmentCsv>> importErrors, String pathError) {
+        if (!importErrors.isEmpty()) {
+            try {
+
+                BufferedWriter bw = new BufferedWriter(new FileWriter(pathError));
+
+                // header
+                bw.write("department_name,error_message");
+                bw.newLine();
+
+                for (ImportError error : importErrors) {
+                    String ln = error.getCsv() + "," + String.join("|", error.getMessage());
+                    bw.write(ln);
+                    bw.newLine();
+                }
+
+                bw.flush();
+                bw.close();
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+    }
+
     @Override
     public String importDepartmentFromCSV(String pathName) {
-        // doc du lieu tu file va dua du lieu cho repository de lưu vao DB
-        if (!pathName.endsWith(".csv")) {
-            return "Định dạng file không đúng";
-        }
-        // FileReader: là 1 doi tuong dung de doc file , doc tung ki tu
-        // BufferedReader: // ho tro doc theo tung dòng
-
-        boolean checkCreate = false;
-        List<Department> departments = new ArrayList<>();// chua ds department se dc them moi
-        try (BufferedReader br = new BufferedReader(new FileReader(pathName))) {
-            String line = br.readLine();// lay dòng dau tien, bo no di
-            while ((line = br.readLine()) != null) {
-                String[] fields = line.split(",");
-                String departmentName = fields[0];
-                // validation
-                Department dep = new Department(departmentName);
-                departments.add(dep);
-            }
-
-            //  luu vao DB
-            checkCreate = departmentRepository.createListDepartment(departments);
-
-            // xuat ra file loi
-
-        } catch (Exception e) {
-//            e.printStackTrace();
-        }
-        return "Import thành công ";
+        String pathError = "C:\\Users\\pcduo\\OneDrive\\Desktop\\rw100\\csv\\output_error_department.csv";
+        Map<String, Department> mapByName = departmentRepository.mapByName();
+        DepartmentContext context = new DepartmentContext(mapByName);
+        String message = this.importFileCSV(pathName, context, pathError);
+        return message;
     }
+//
+//    public void exportFileCSV(List<ImportError> importErrors, String pathError){
+//        if (!importErrors.isEmpty()) {
+//            try {
+
+    /// /
+//                BufferedWriter bw = new BufferedWriter(new FileWriter(pathError));
+//
+//                // header
+//                bw.write("department_name,error_message");
+//                bw.newLine();
+//
+//                for (ImportError error : importErrors) {
+//                    String ln = error.get() + "," + String.join("|", error.getMessage());
+//                    bw.write(ln);
+//                    bw.newLine();
+//                }
+//
+//                bw.flush();
+//                bw.close();
+//
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+//        }
+//
+//    }
+//
+
 }

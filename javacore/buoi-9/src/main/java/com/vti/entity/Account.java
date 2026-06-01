@@ -44,6 +44,11 @@ public class Account {
         this.createDate = createDate;
     }
 
+    public Account(String username, String email) {
+        this.username = username;
+        this.email = email;
+    }
+
     public int getId() {
         return id;
     }
